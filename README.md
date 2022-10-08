@@ -1,16 +1,15 @@
 # Under All in One Project
 
-# Please Dont Open This Project
+## Please Don't Open This Project
 
-## Okey its not ready yet
+it's not ready yet and it contains a lot of bugs
 
-### its contain a lot of frameworks with diff lang
+## JS - JAVA - Python - PHP - ASP.NET
 
-## JS - JAVA - Python - PHP (until now)
+and here is the deal All Backend Frameworks work on PORT = 3000
 
-# Okey here is the deal All Backend Frameworks works on PORT = 3000
+and the Frontend Frameworks work on PORT = 8000
 
-# and the Frontend Frameworks works on PORT = 8000
 
 
 
