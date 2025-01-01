@@ -1,88 +1,164 @@
-# Under All in One Project
+# Cliuno Next.js template
 
-## Please Don't Open This Project
-
-it's not ready yet and it contains a lot of bugs
-
-## JS - JAVA - Python - PHP - ASP.NET
-
-and here is the deal All Backend Frameworks work on PORT = 3000
-
-and the Frontend Frameworks work on PORT = 8000
-
-
-
-
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<img src="./public/logo.png" style="width: 300px; height: 300px; padding-bottom: 30px;" alt="logo">
 
 ## Installation
 
-```bash
-$ npm install
-```
-
-## Running the app
+if you want to run the project locally make sure you have installed nodejs, pnpm.
+to install node js go to [nodejs](https://nodejs.org/en/download/)
+to install pnpm run the following command
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install -g pnpm
 ```
 
-## Test
+if you want to run the project using docker make sure you have installed docker.
+
+to install docker go to [docker](https://docs.docker.com/get-docker/)
+
+to run the project using docker run the following command
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose -d up
 ```
 
-## Support
+or pull the image from docker hub
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+docker pull iru44/next-template
+```
 
-## Stay in touch
+make sure you pull the database image from docker hub as well
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+then run the following command
 
-## License
+```bash
+docker run -p 3000:3000 iru44/next-template
+```
 
-Nest is [MIT licensed](LICENSE).
+if you want to run the project using kubernetes make sure you have installed minikube.
+
+to install minikube go to [minikube](https://minikube.sigs.k8s.io/docs/start/)
+to install kubectl go to [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
+## Clone the repository
+
+```bash
+git clone https://github.com/CLIuno/CLIuno-Next-template.git
+```
+
+then run the following command
+
+```bash
+pnpm install
+```
+
+## Usage
+
+to run the project run the following command
+
+```bash
+pnpm dev
+```
+
+## Features
+
+list of features that already implemented:
+
+| Status             | Feature                       |
+| ------------------ | ----------------------------- |
+| [ ]                | Auth routes                   |
+| [ ]                | User routes                   |
+| [ ]                | Role routes                   |
+| [ ]                | Post routes                   |
+| [ ]                | User Role routes              |
+| [ ]                | CI/CD with GitHub Actions     |
+| :white_check_mark: | Mailer                        |
+| :white_check_mark: | Logging                       |
+| [ ]                | Dockerize                     |
+| [ ]                | Kubernetes                    |
+| [ ]                | Soft delete                   |
+| :white_check_mark: | SQLite database               |
+| [ ]                | Fully documentation           |
+| :white_check_mark: | Postman collection just basic |
+
+## Premium features
+
+You will get more features if you buy the full version and you can use it for commercial purposes (contact me for more information)
+
+| Status             | Feature                      |
+| ------------------ | ---------------------------- |
+| :white_check_mark: | Vote routes                  |
+| :white_check_mark: | Comment routes               |
+| :white_check_mark: | Permission routes            |
+| :white_check_mark: | Reacion routes               |
+| :white_check_mark: | Payment routes               |
+| :white_check_mark: | Notification routes          |
+| :white_check_mark: | Pagination                   |
+| :white_check_mark: | Redis cache                  |
+| :white_check_mark: | File upload                  |
+| :white_check_mark: | Fully unit test              |
+| :white_check_mark: | Database Factory             |
+| :white_check_mark: | Make use of Enums            |
+| :white_check_mark: | GraphQL (Optional)           |
+| :white_check_mark: | Postman collection extra     |
+| :white_check_mark: | Postgres database or MongoDB |
+
+## list of endpoints
+
+### Auth
+
+| Status             | Endpoint Description    | Method | Path                             |
+| ------------------ | ----------------------- | ------ | -------------------------------- |
+| :white_check_mark: | Login                   | POST   | `/api/v1/auth/login`             |
+| [ ]                | Register                | POST   | `/api/v1/auth/register`          |
+| [ ]                | Logout                  | POST   | `/api/v1/auth/logout`            |
+| :white_check_mark: | Reset Password          | POST   | `/api/v1/auth/reset-password`    |
+| :white_check_mark: | Forgot Password         | POST   | `/api/v1/auth/forgot-password`   |
+| :white_check_mark: | Change Password         | POST   | `/api/v1/auth/change-password`   |
+| :white_check_mark: | Send Verification Email | POST   | `/api/v1/auth/send-verify-email` |
+| :white_check_mark: | Verify Email            | POST   | `/api/v1/auth/verify-email`      |
+| [ ]                | Check Token             | POST   | `/api/v1/auth/check-token`       |
+| [ ]                | Refresh Token           | POST   | `/api/v1/auth/refresh-token`     |
+| :white_check_mark: | Verify OTP              | POST   | `/api/v1/auth/otp/verify`        |
+| :white_check_mark: | Disable OTP             | POST   | `/api/v1/auth/otp/disable`       |
+| :white_check_mark: | Validate OTP            | POST   | `/api/v1/auth/otp/validate`      |
+| :white_check_mark: | Generate OTP            | POST   | `/api/v1/auth/otp/generate`      |
+
+### Users
+
+| Status | Endpoint Description    | Method | Path                                 |
+| ------ | ----------------------- | ------ | ------------------------------------ |
+| [ ]    | Get all current user    | GET    | `/api/v1/users/current`              |
+| [ ]    | Get user by username    | GET    | `/api/v1/users/username/:username`   |
+| [ ]    | Get all users           | GET    | `/api/v1/users`                      |
+| [ ]    | Get a user by ID        | GET    | `/api/v1/users/:id`                  |
+| [ ]    | Update user by ID       | PATCH  | `/api/v1/users/:id`                  |
+| [ ]    | Delete user by ID       | DELETE | `/api/v1/users/:id`                  |
+| [ ]    | Get permissions by user | GET    | `/api/v1/users/:user_id/permissions` |
+| [ ]    | Get posts by user       | GET    | `/api/v1/users/:user_id/posts`       |
+| [ ]    | Get roles by user       | GET    | `/api/v1/users/:user_id/roles`       |
+
+### Roles
+
+| Status | Endpoint Description    | Method | Path                                 |
+| ------ | ----------------------- | ------ | ------------------------------------ |
+| [ ]    | Get all roles           | GET    | `/api/v1/roles`                      |
+| [ ]    | Get role by ID          | GET    | `/api/v1/roles/:id`                  |
+| [ ]    | Create a role           | POST   | `/api/v1/roles`                      |
+| [ ]    | Update role by ID       | PATCH  | `/api/v1/roles/:id`                  |
+| [ ]    | Delete role by ID       | DELETE | `/api/v1/roles/:id`                  |
+| [ ]    | Get permissions by role | GET    | `/api/v1/roles/:role_id/permissions` |
+| [ ]    | Get users by role       | GET    | `/api/v1/roles/:role_id/users`       |
+
+### Posts
+
+| Status | Endpoint Description       | Method | Path                          |
+| ------ | -------------------------- | ------ | ----------------------------- |
+| [ ]    | Get all current user posts | GET    | `/api/v1/posts/current-user`  |
+| [ ]    | Get all posts              | GET    | `/api/v1/posts`               |
+| [ ]    | Get post by ID             | GET    | `/api/v1/posts/:id`           |
+| [ ]    | Create a post              | POST   | `/api/v1/posts`               |
+| [ ]    | Update post by ID          | PATCH  | `/api/v1/posts/:id`           |
+| [ ]    | Delete post by ID          | DELETE | `/api/v1/posts/:id`           |
+| [ ]    | Get users by post          | GET    | `/api/v1/posts/:post_id/user` |
