@@ -1,0 +1,4 @@
+allowBuilds:
+  "@nestjs/core": true
+  bcrypt: true
+  better-sqlite3: true
