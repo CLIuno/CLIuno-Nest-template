@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import * as crypto from 'node:crypto'
@@ -7,7 +12,6 @@ import * as OTPAuth from 'otpauth'
 import { ConfigService } from '@nestjs/config'
 
 import { User } from '../entities/user.entity'
-import { emailValidate } from '../helpers/email-validator'
 
 @Injectable()
 export class OtpService {
@@ -16,65 +20,39 @@ export class OtpService {
     private readonly configService: ConfigService,
   ) {}
 
-  async generate(usernameOrEmail: string) {
-    if (!usernameOrEmail) throw new BadRequestException('usernameOrEmail is required')
-
-    const isEmail = emailValidate(usernameOrEmail)
-    const user = await this.userRepository.findOneBy(
-      isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail },
-    )
-    if (!user) throw new NotFoundException('User not found')
+  async generate(userId: string) {
+    const user = await this.findUser(userId)
 
     const base32_secret = this.generateBase32Secret()
-    const totp = new OTPAuth.TOTP({
-      issuer: this.configService.get<string>('FRONTEND_URL'),
-      label: user.username,
-      algorithm: 'SHA1',
-      digits: 6,
-      secret: base32_secret,
-    })
+    const otpauth_url = this.buildTotp(user, base32_secret).toString()
 
-    const otpauth_url = totp.toString()
     user.otp_auth_url = otpauth_url
     user.otp_base32 = base32_secret
     await this.userRepository.save(user)
 
-    return { status: 'success', base32: base32_secret, otpauth_url }
+    return {
+      status: 'success',
+      message: 'OTP secret generated',
+      data: { secret: base32_secret, base32: base32_secret, otpauth_url },
+    }
   }
 
-  async disable(usernameOrEmail: string) {
-    if (!usernameOrEmail) throw new BadRequestException('usernameOrEmail is required')
-
-    const isEmail = emailValidate(usernameOrEmail)
-    const user = await this.userRepository.findOneBy(
-      isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail },
-    )
-    if (!user) throw new NotFoundException('User not found')
+  async disable(userId: string) {
+    const user = await this.findUser(userId)
 
     user.is_otp_enabled = false
+    user.otp_base32 = null
+    user.otp_auth_url = null
     await this.userRepository.save(user)
     return { status: 'success', message: 'OTP disabled successfully' }
   }
 
-  async verify(usernameOrEmail: string, token: string) {
-    if (!usernameOrEmail) throw new BadRequestException('usernameOrEmail is required')
+  async verify(userId: string, token: string | undefined) {
+    const user = await this.findUser(userId)
+    if (!user.otp_base32) throw new BadRequestException('OTP is not set up')
 
-    const isEmail = emailValidate(usernameOrEmail)
-    const user = await this.userRepository.findOneBy(
-      isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail },
-    )
-    if (!user) throw new NotFoundException('Token is invalid or user does not exist')
-
-    const totp = new OTPAuth.TOTP({
-      issuer: this.configService.get<string>('FRONTEND_URL'),
-      label: user.username,
-      algorithm: 'SHA1',
-      digits: 6,
-      secret: user.otp_base32,
-    })
-
-    const delta = totp.validate({ token })
-    if (delta === null) throw new BadRequestException('Authentication failed')
+    const delta = this.buildTotp(user, user.otp_base32).validate({ token: String(token ?? '') })
+    if (delta === null) throw new UnauthorizedException('Authentication failed')
 
     user.is_otp_verified = true
     user.is_otp_enabled = true
@@ -82,28 +60,35 @@ export class OtpService {
     return { status: 'success', message: 'OTP verified successfully' }
   }
 
-  async validate(usernameOrEmail: string, token: string) {
-    if (!usernameOrEmail) throw new BadRequestException('usernameOrEmail is required')
+  async validate(userId: string, token: string | undefined) {
+    const user = await this.findUser(userId)
+    if (!user.is_otp_enabled || !user.otp_base32) {
+      throw new BadRequestException('OTP is not enabled for this user')
+    }
 
-    const isEmail = emailValidate(usernameOrEmail)
-    const user = await this.userRepository.findOneBy(
-      isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail },
-    )
+    const delta = this.buildTotp(user, user.otp_base32).validate({
+      token: String(token ?? ''),
+      window: 1,
+    })
+    if (delta === null) throw new UnauthorizedException('Invalid token')
+
+    return { status: 'success', message: 'Token is valid' }
+  }
+
+  private async findUser(userId: string): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id: userId })
     if (!user) throw new NotFoundException('User not found')
-    if (!user.is_otp_enabled) throw new BadRequestException('OTP is not enabled for this user')
+    return user
+  }
 
-    const totp = new OTPAuth.TOTP({
-      issuer: this.configService.get<string>('FRONTEND_URL'),
+  private buildTotp(user: User, secret: string): OTPAuth.TOTP {
+    return new OTPAuth.TOTP({
+      issuer: this.configService.get<string>('FRONTEND_URL') || 'CLIuno',
       label: user.username,
       algorithm: 'SHA1',
       digits: 6,
-      secret: user.otp_base32,
+      secret,
     })
-
-    const delta = totp.validate({ token, window: 1 })
-    if (delta === null) throw new BadRequestException('Invalid token')
-
-    return { status: 'success', message: 'Token is valid' }
   }
 
   private generateBase32Secret(): string {

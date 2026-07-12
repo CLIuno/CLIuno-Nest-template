@@ -168,18 +168,19 @@ export class AuthService {
     }
   }
 
-  async sendVerifyEmail(email: string) {
-    if (!email) {
+  async sendVerifyEmail(email: string, userId?: string) {
+    // Authenticated requests derive the target user; `email` is a fallback.
+    if (!email && !userId) {
       throw new BadRequestException('Email is required')
     }
 
-    const user = await this.userRepository.findOneBy({ email })
+    const user = await this.userRepository.findOneBy(userId ? { id: userId } : { email })
     if (!user) {
       throw new NotFoundException('User not found')
     }
 
     const token = await generateToken(this.blacklistRepository)
-    sendEmail.verifyEmail(email, token, user.id)
+    sendEmail.verifyEmail(user.email, token, user.id)
 
     return { status: 'success', message: 'Email sent successfully' }
   }
