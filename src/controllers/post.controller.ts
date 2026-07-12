@@ -39,8 +39,8 @@ export class PostController {
   }
 
   @Post()
-  async create(@Body() dto: CreatePostDto) {
-    return this.postService.create(dto)
+  async create(@Request() req, @Body() dto: CreatePostDto) {
+    return this.postService.create(req.user.id, dto)
   }
 
   @Patch(':id')

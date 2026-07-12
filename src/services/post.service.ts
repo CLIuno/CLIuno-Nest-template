@@ -41,10 +41,13 @@ export class PostService {
     return { status: 'success', message: 'Post fetched successfully', data: { post } }
   }
 
-  async create(dto: CreatePostDto) {
+  async create(userId: string, dto: CreatePostDto) {
     if (!dto.title || !dto.content) throw new BadRequestException('Title and Content are required')
 
-    const post = this.postRepository.create(dto)
+    const user = await this.userRepository.findOneBy({ id: userId })
+    if (!user) throw new NotFoundException('User not found')
+
+    const post = this.postRepository.create({ ...dto, user })
     const result = await this.postRepository.save(post)
     return { status: 'success', message: 'Post created successfully', data: { result } }
   }

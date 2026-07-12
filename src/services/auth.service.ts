@@ -48,10 +48,9 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, this.saltRounds)
 
-    const role = await this.roleRepository.findOne({ where: { name: 'user' } })
-    if (!role) {
-      throw new BadRequestException('Role does not exist')
-    }
+    // Default role is created on first use so a fresh install works out of the box
+    let role = await this.roleRepository.findOne({ where: { name: 'user' } })
+    role ??= await this.roleRepository.save(this.roleRepository.create({ name: 'user' }))
 
     const newUser = this.userRepository.create({
       ...dto,

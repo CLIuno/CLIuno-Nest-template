@@ -28,13 +28,13 @@ export class UserController {
     return this.userService.getByUsername(username)
   }
 
-  @Get('posts')
-  async getPostsByUserId(@Body('user_id') userId: string) {
+  @Get(':id/posts')
+  async getPostsByUserId(@Param('id') userId: string) {
     return this.userService.getPostsByUserId(userId)
   }
 
-  @Get('role')
-  async getRolesByUserId(@Body('user_id') userId: string) {
+  @Get(':id/roles')
+  async getRolesByUserId(@Param('id') userId: string) {
     return this.userService.getRolesByUserId(userId)
   }
 
@@ -43,7 +43,6 @@ export class UserController {
     return this.userService.getById(id)
   }
 
-  @UseGuards(AdminGuard)
   @Get()
   async getAll() {
     return this.userService.getAll()

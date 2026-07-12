@@ -27,19 +27,19 @@ export class UserService {
   async getById(id: string) {
     const user = await this.userRepository.findOneBy({ id })
     if (!user) throw new NotFoundException('User not found')
-    return { status: 'success', data: plainToInstance(User, user) }
+    return { status: 'success', data: { user: plainToInstance(User, user) } }
   }
 
   async getCurrent(userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId })
     if (!user) throw new NotFoundException('User not found')
-    return { status: 'success', data: plainToInstance(User, user) }
+    return { status: 'success', data: { user: plainToInstance(User, user) } }
   }
 
   async getByUsername(username: string) {
     const user = await this.userRepository.findOneBy({ username })
     if (!user) throw new NotFoundException('User not found')
-    return { status: 'success', data: plainToInstance(User, user) }
+    return { status: 'success', data: { user: plainToInstance(User, user) } }
   }
 
   async updateCurrent(userId: string, body: Partial<User>) {
@@ -95,10 +95,12 @@ export class UserService {
   }
 
   async getRolesByUserId(userId: string) {
-    const user = await this.userRepository.findOneBy({ id: userId })
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['role'],
+    })
     if (!user) throw new NotFoundException('User not found')
 
-    const role = await this.roleRepository.findOneBy({ id: userId })
-    return { status: 'success', message: 'Role found', data: { role } }
+    return { status: 'success', message: 'Role found', data: { role: user.role } }
   }
 }
