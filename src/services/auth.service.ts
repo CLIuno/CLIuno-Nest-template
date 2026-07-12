@@ -52,14 +52,15 @@ export class AuthService {
     let role = await this.roleRepository.findOne({ where: { name: 'user' } })
     role ??= await this.roleRepository.save(this.roleRepository.create({ name: 'user' }))
 
+    const token = await generateToken(this.blacklistRepository)
     const newUser = this.userRepository.create({
       ...dto,
       password: hashedPassword,
       role,
+      verify_token: token,
     })
     await this.userRepository.save(newUser)
 
-    const token = await generateToken(this.blacklistRepository)
     sendEmail.verifyEmail(dto.email, token, newUser.id)
 
     return {
@@ -180,28 +181,21 @@ export class AuthService {
     }
 
     const token = await generateToken(this.blacklistRepository)
+    user.verify_token = token
+    await this.userRepository.save(user)
     sendEmail.verifyEmail(user.email, token, user.id)
 
     return { status: 'success', message: 'Email sent successfully' }
   }
 
-  async verifyEmail(userId: string, token: string) {
-    const user = await this.userRepository.findOneBy({ id: userId })
+  async verifyEmail(token: string) {
+    const user = token ? await this.userRepository.findOneBy({ verify_token: token }) : null
     if (!user) {
-      throw new BadRequestException('User does not exist')
+      throw new BadRequestException('Invalid or expired verification token')
     }
-
-    const blacklisted = await this.blacklistRepository.findOne({ where: { token } })
-    if (blacklisted) {
-      throw new UnauthorizedException('Token has already been invalidated')
-    }
-
-    const newBlacklisted = new BlacklistedToken()
-    newBlacklisted.token = token
-    newBlacklisted.invalidatedAt = new Date()
-    await this.blacklistRepository.save(newBlacklisted)
 
     user.is_verified = true
+    user.verify_token = null
 
     const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY')
     const refreshSecret = this.configService.get<string>('REFRESH_JWT_SECRET_KEY')
@@ -237,40 +231,38 @@ export class AuthService {
     }
 
     const token = await generateToken(this.blacklistRepository)
+    user.reset_token = token
+    await this.userRepository.save(user)
     sendEmail.resetPassword(user.email, token, user.id)
 
     return { status: 'success', message: 'Email sent successfully' }
   }
 
   async resetPassword(dto: ResetPasswordDto) {
-    const user = await this.userRepository.findOneBy({ id: dto.user_id })
+    const user = dto.token ? await this.userRepository.findOneBy({ reset_token: dto.token }) : null
     if (!user) {
-      throw new BadRequestException('User does not exist')
+      throw new BadRequestException('Invalid or expired reset token')
     }
-
-    const blacklisted = await this.blacklistRepository.findOne({ where: { token: dto.token } })
-    if (blacklisted) {
-      throw new UnauthorizedException('Token has already been invalidated')
-    }
-
-    const newBlacklisted = new BlacklistedToken()
-    newBlacklisted.token = dto.token
-    newBlacklisted.invalidatedAt = new Date()
-    await this.blacklistRepository.save(newBlacklisted)
 
     user.password = await bcrypt.hash(dto.password, this.saltRounds)
+    user.reset_token = null
     await this.userRepository.save(user)
 
     return { status: 'success', message: 'Password reset successful' }
   }
 
-  async changePassword(dto: ChangePasswordDto) {
-    const user = await this.userRepository.findOneBy({ id: dto.user_id })
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.userRepository.findOneBy({ id: userId })
     if (!user) {
       throw new BadRequestException('User does not exist')
     }
 
-    user.password = await bcrypt.hash(dto.password, this.saltRounds)
+    const matches = await bcrypt.compare(dto.oldPassword, user.password)
+    if (!matches) {
+      throw new BadRequestException('Current password is incorrect')
+    }
+
+    user.password = await bcrypt.hash(dto.newPassword, this.saltRounds)
     await this.userRepository.save(user)
 
     return { status: 'success', message: 'Password changed successfully' }

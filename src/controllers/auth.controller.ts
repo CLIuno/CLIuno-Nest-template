@@ -27,8 +27,12 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  async refreshToken(@Headers('authorization') auth: string) {
-    const token = auth?.split(' ')[1]
+  async refreshToken(
+    @Headers('authorization') auth: string,
+    @Body('refreshToken') bodyToken?: string,
+  ) {
+    // Frontends send the refresh token in the body; the header is a fallback
+    const token = bodyToken ?? auth?.split(' ')[1]
     return this.authService.refreshToken(token)
   }
 
@@ -46,8 +50,8 @@ export class AuthController {
   }
 
   @Post('verify-email')
-  async verifyEmail(@Body('user_id') userId: string, @Body('token') token: string) {
-    return this.authService.verifyEmail(userId, token)
+  async verifyEmail(@Body('token') token: string) {
+    return this.authService.verifyEmail(token)
   }
 
   @Post('forgot-password')
@@ -66,8 +70,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
-  async changePassword(@Body() dto: ChangePasswordDto) {
-    return this.authService.changePassword(dto)
+  async changePassword(@Request() req, @Body() dto: ChangePasswordDto) {
+    return this.authService.changePassword(req.user.id, dto)
   }
 
   @Get()

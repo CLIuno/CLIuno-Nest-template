@@ -1,10 +1,6 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional } from 'class-validator'
 
 export class ResetPasswordDto {
-  @IsString()
-  @IsNotEmpty()
-  user_id: string
-
   @IsString()
   @IsNotEmpty()
   token: string
@@ -14,6 +10,7 @@ export class ResetPasswordDto {
   @MaxLength(32)
   password: string
 
+  @IsOptional()
   @IsString()
-  password_confirmation: string
+  password_confirmation?: string
 }
