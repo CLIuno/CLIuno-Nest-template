@@ -51,7 +51,7 @@ export class UserService {
     return {
       status: 'success',
       message: 'User updated',
-      data: { transformed: plainToInstance(User, updated) },
+      data: { user: plainToInstance(User, updated) },
     }
   }
 
@@ -61,7 +61,7 @@ export class UserService {
 
     this.userRepository.merge(user, body)
     const updated = await this.userRepository.save(user)
-    return { status: 'success', data: plainToInstance(User, updated) }
+    return { status: 'success', data: { user: plainToInstance(User, updated) } }
   }
 
   async deleteCurrent(userId: string) {
@@ -73,7 +73,7 @@ export class UserService {
     return {
       status: 'success',
       message: 'User deleted',
-      data: { transformed: plainToInstance(User, updated) },
+      data: { user: plainToInstance(User, updated) },
     }
   }
 
@@ -83,7 +83,7 @@ export class UserService {
 
     user.is_deleted = true
     const updated = await this.userRepository.save(user)
-    return { status: 'success', data: plainToInstance(User, updated) }
+    return { status: 'success', data: { user: plainToInstance(User, updated) } }
   }
 
   async getPostsByUserId(userId: string) {
