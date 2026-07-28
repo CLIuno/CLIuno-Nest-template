@@ -40,6 +40,9 @@ export class User {
   nationality: string
 
   @Column({ nullable: true })
+  avatar_url: string
+
+  @Column({ nullable: true })
   phone: string
 
   @Column({ unique: true })

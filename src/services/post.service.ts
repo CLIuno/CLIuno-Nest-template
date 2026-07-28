@@ -6,6 +6,12 @@ import { Post } from '../entities/post.entity'
 import { User } from '../entities/user.entity'
 import { CreatePostDto, UpdatePostDto } from '../dto/post.dto'
 
+// Frontends may send either casing; image_url is the stored and returned field.
+function withImageUrl<T extends { image_url?: string; imageUrl?: string }>(dto: T) {
+  const { imageUrl, ...rest } = dto
+  return imageUrl === undefined ? rest : { ...rest, image_url: imageUrl }
+}
+
 @Injectable()
 export class PostService {
   constructor(
@@ -47,7 +53,7 @@ export class PostService {
     const user = await this.userRepository.findOneBy({ id: userId })
     if (!user) throw new NotFoundException('User not found')
 
-    const post = this.postRepository.create({ ...dto, user })
+    const post = this.postRepository.create({ ...withImageUrl(dto), user })
     const result = await this.postRepository.save(post)
     return { status: 'success', message: 'Post created successfully', data: { result } }
   }
@@ -56,7 +62,7 @@ export class PostService {
     const post = await this.postRepository.findOneBy({ id })
     if (!post) throw new NotFoundException('Post not found')
 
-    this.postRepository.merge(post, dto)
+    this.postRepository.merge(post, withImageUrl(dto))
     await this.postRepository.save(post)
     return { status: 'success', message: 'Post updated successfully' }
   }

@@ -11,6 +11,7 @@ import { TodoModule } from './todo.module'
 import { FollowModule } from './follow.module'
 import { PostModule } from './post.module'
 import { RoleModule } from './role.module'
+import { UploadModule } from './upload.module'
 
 import { User } from '../entities/user.entity'
 import { Role } from '../entities/role.entity'
@@ -36,6 +37,7 @@ import { BlacklistedToken } from '../entities/blacklistedToken.entity'
     FollowModule,
     PostModule,
     RoleModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

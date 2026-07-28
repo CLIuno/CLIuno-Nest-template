@@ -23,7 +23,7 @@ export class Post {
   content: string
 
   @Column({ nullable: true })
-  imageUrl: string
+  image_url: string
 
   @Column({ default: false })
   is_paid: boolean

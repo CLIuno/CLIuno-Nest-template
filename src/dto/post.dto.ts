@@ -11,6 +11,11 @@ export class CreatePostDto {
 
   @IsString()
   @IsOptional()
+  image_url?: string
+
+  // camelCase alias; folded into image_url by the service
+  @IsString()
+  @IsOptional()
   imageUrl?: string
 
   @IsBoolean()
@@ -27,6 +32,11 @@ export class UpdatePostDto {
   @IsOptional()
   content?: string
 
+  @IsString()
+  @IsOptional()
+  image_url?: string
+
+  // camelCase alias; folded into image_url by the service
   @IsString()
   @IsOptional()
   imageUrl?: string
