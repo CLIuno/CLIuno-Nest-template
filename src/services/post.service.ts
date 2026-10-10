@@ -25,14 +25,14 @@ export class PostService {
 
     const posts = await this.postRepository.find({
       where: { user: { id: user.id } },
-      relations: ['user', 'comments', 'comments.user'],
+      relations: { user: true, comments: { user: true } },
     })
     return { status: 'success', message: 'User posts fetched successfully', data: { posts } }
   }
 
   async getAll() {
     const posts = await this.postRepository.find({
-      relations: ['user', 'comments', 'comments.user'],
+      relations: { user: true, comments: { user: true } },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: 'Posts fetched successfully', data: { posts } }
@@ -41,7 +41,7 @@ export class PostService {
   async getById(id: string) {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['user', 'comments', 'comments.user'],
+      relations: { user: true, comments: { user: true } },
     })
     if (!post) throw new NotFoundException('Post not found')
     return { status: 'success', message: 'Post fetched successfully', data: { post } }
@@ -74,7 +74,10 @@ export class PostService {
   }
 
   async getUserByPostId(postId: string) {
-    const post = await this.postRepository.findOne({ where: { id: postId }, relations: ['user'] })
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: { user: true },
+    })
     if (!post) throw new NotFoundException('Post not found')
     return { status: 'success', message: 'User found', data: { user: post.user } }
   }

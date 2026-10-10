@@ -97,7 +97,7 @@ export class UserService {
   async getRolesByUserId(userId: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['role'],
+      relations: { role: true },
     })
     if (!user) throw new NotFoundException('User not found')
 

@@ -44,7 +44,7 @@ export class FollowService {
   async getFollowers(userId: string) {
     const follows = await this.followRepository.find({
       where: { following: { id: userId } },
-      relations: ['follower'],
+      relations: { follower: true },
     })
     const followers = follows.map((f) => f.follower)
     return { status: 'success', message: 'Followers fetched successfully', data: { followers } }
@@ -53,7 +53,7 @@ export class FollowService {
   async getFollowing(userId: string) {
     const follows = await this.followRepository.find({
       where: { follower: { id: userId } },
-      relations: ['following'],
+      relations: { following: true },
     })
     const following = follows.map((f) => f.following)
     return { status: 'success', message: 'Following fetched successfully', data: { following } }
