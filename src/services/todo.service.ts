@@ -20,7 +20,7 @@ export class TodoService {
 
   async getAll() {
     const todos = await this.todoRepository.find({
-      relations: ['user'],
+      relations: { user: true },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: 'Todos fetched successfully', data: { todos } }
@@ -29,7 +29,7 @@ export class TodoService {
   async getById(id: string) {
     const todo = await this.todoRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: { user: true },
     })
     if (!todo) throw new NotFoundException('Todo not found')
     return { status: 'success', message: 'Todo fetched successfully', data: { todo } }
@@ -38,7 +38,7 @@ export class TodoService {
   async getCurrentUserTodos(userId: string) {
     const todos = await this.todoRepository.find({
       where: { user: { id: userId } },
-      relations: ['user'],
+      relations: { user: true },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: 'Todos fetched successfully', data: { todos } }
@@ -60,7 +60,7 @@ export class TodoService {
   }
 
   async update(userId: string, id: string, dto: UpdateTodoDto) {
-    const todo = await this.todoRepository.findOne({ where: { id }, relations: ['user'] })
+    const todo = await this.todoRepository.findOne({ where: { id }, relations: { user: true } })
     if (!todo) throw new NotFoundException('Todo not found')
     if (todo.user.id !== userId) throw new ForbiddenException('You can only update your own todos')
 
@@ -73,7 +73,7 @@ export class TodoService {
   }
 
   async delete(userId: string, id: string) {
-    const todo = await this.todoRepository.findOne({ where: { id }, relations: ['user'] })
+    const todo = await this.todoRepository.findOne({ where: { id }, relations: { user: true } })
     if (!todo) throw new NotFoundException('Todo not found')
     if (todo.user.id !== userId) throw new ForbiddenException('You can only delete your own todos')
 
@@ -82,7 +82,7 @@ export class TodoService {
   }
 
   async toggleComplete(userId: string, id: string) {
-    const todo = await this.todoRepository.findOne({ where: { id }, relations: ['user'] })
+    const todo = await this.todoRepository.findOne({ where: { id }, relations: { user: true } })
     if (!todo) throw new NotFoundException('Todo not found')
     if (todo.user.id !== userId) throw new ForbiddenException('You can only update your own todos')
 

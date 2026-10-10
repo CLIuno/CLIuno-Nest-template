@@ -23,7 +23,7 @@ export class CommentService {
   async getByPostId(postId: string) {
     const comments = await this.commentRepository.find({
       where: { post: { id: postId } },
-      relations: ['user'],
+      relations: { user: true },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: 'Comments fetched successfully', data: { comments } }
@@ -48,7 +48,10 @@ export class CommentService {
   }
 
   async update(userId: string, id: string, dto: UpdateCommentDto) {
-    const comment = await this.commentRepository.findOne({ where: { id }, relations: ['user'] })
+    const comment = await this.commentRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    })
     if (!comment) throw new NotFoundException('Comment not found')
     if (comment.user.id !== userId)
       throw new ForbiddenException('You can only update your own comments')
@@ -59,7 +62,10 @@ export class CommentService {
   }
 
   async delete(userId: string, id: string) {
-    const comment = await this.commentRepository.findOne({ where: { id }, relations: ['user'] })
+    const comment = await this.commentRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    })
     if (!comment) throw new NotFoundException('Comment not found')
     if (comment.user.id !== userId)
       throw new ForbiddenException('You can only delete your own comments')
